@@ -12,8 +12,6 @@ class ItemController extends Controller
     //
     public function pdf_download(Request $request)
     {
-        $user = Auth::user();
-
         $dompdf = \App::make('dompdf.wrapper');
 
         $dompdf->loadHtml($request->pdf); 

@@ -6,23 +6,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
     //
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $data = $request->validate(
-            [
-                'name' => 'required|string',
-                'email' => 'required|email|string|unique:users,email',
-                'password' => [
-                    'required',
-                    'confirmed',
-                    Password::min(8)->mixedCase()->numbers()->symbols()
-                ]
-            ]
-        );
+        $data = $request->validated();
 
         $user = User::create(
             [
@@ -40,17 +32,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate(
-            [
-                'email' => 'required|email|string|exists:users,email',
-                'password' => [
-                    'required',
-                ],
-                'remember' => 'boolean'
-            ]
-        );
+        $credentials = $request->validated();
 
         $remember = $credentials['remember'] ?? false;
 
@@ -59,16 +43,18 @@ class AuthController extends Controller
         if(!Auth::attempt($credentials, $remember))
         {
             return response([
-                'error' => 'The Provided credentials are not correct'
+                'error' => 'The Provided credentials are not correct!'
             ], 422);
         }
 
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
+        
+        $user->imageUrl = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
 
         return response([
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ]);
     }
 

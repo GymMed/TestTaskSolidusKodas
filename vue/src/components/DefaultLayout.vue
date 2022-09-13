@@ -88,7 +88,7 @@ import { useRouter } from 'vue-router';
 }*/
 const navigation = [
   { name: 'Dashboard', to: {name: 'Dashboard'}},
-  { name: 'Surveys', to: {name: 'Surveys'}},
+  //{ name: 'Surveys', to: {name: 'Surveys'}},
 ];
 const userNavigation = [
   //{ name: 'Your Profile', href: '#', click: '' },
